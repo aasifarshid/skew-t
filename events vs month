@@ -1,0 +1,35 @@
+import matplotlib.pyplot as plt
+
+# Months
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+# Frequencies
+frequencies = [0, 0, 0, 0, 1, 0, 19, 8, 0, 1, 0, 0]
+
+# Set the style
+plt.style.use('ggplot')
+
+# Plotting the bar graph
+plt.figure(figsize=(10, 6))
+bars = plt.bar(months, frequencies, color='skyblue')
+
+# Adding data labels
+for bar in bars:
+    plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(int(bar.get_height())), 
+             ha='center', va='bottom')
+
+# Adding labels and title
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Number of events', fontsize=12)
+plt.title('number of Events vs Month', fontsize=14)
+
+# Adjusting tick labels
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+
+# Save the figure as an image
+plt.savefig('events_vs_month.png')
+
+# Showing the plot
+plt.tight_layout()
+plt.show()
