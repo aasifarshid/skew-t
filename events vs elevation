@@ -1,0 +1,27 @@
+import plotly.graph_objects as go
+
+# Data
+elevation_ranges = ['50-100', '101-300', '301-600', '601-900', '901-1200', '1201-1500',
+                    '1501-1800', '1801-2100', '2101-2400', '2401-2700', '2701-3000',
+                    '3001-3300', '3301-3600', '3601-4200']
+num_events = [2, 6, 4, 2, 2, 7, 4, 1, 0, 0, 0, 0, 0, 1]
+
+# Create bar graph
+fig = go.Figure(data=[go.Bar(
+    x=elevation_ranges,
+    y=num_events,
+    marker_color='skyblue'
+)])
+
+# Update layout
+fig.update_layout(
+    title='Number of Events vs Elevation Above MSL',
+    xaxis=dict(title='Elevation Above MSL'),
+    yaxis=dict(title='Number of Events'),
+    plot_bgcolor='rgba(0, 0, 0, 0)',
+    showlegend=False
+)
+
+
+# Show the interactive plot
+fig.show()
