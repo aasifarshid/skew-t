@@ -1,0 +1,92 @@
+import plotly.graph_objs as go
+
+# Data
+altitude_msl = [
+    1490, 1228, 897, 3940, 180, 1676, 465, 124, 1645, 1251,
+    1913, 1262, 180, 367, 105, 1591, 1625, 1213, 96, 106,
+    134, 1308, 91, 359, 928, 323, 1002, 216, 1384, 1836
+]
+
+precipitation_mm_hr = [
+    98, 89, 108, 31, 86, 74, 76, 72, 90, 70,
+    76, 76, 128, 100, 120, 90, 90, 76, 100, 104,
+    84, 70, 80, 72, 70, 140, 76, 70, 80, 70
+]
+
+# Define thresholds for precipitation
+precipitation_threshold = 70  # Define the threshold for precipitation
+
+# Identify the altitude range where precipitation is more occurring
+altitude_high_precipitation = [altitude for altitude, precipitation in zip(altitude_msl, precipitation_mm_hr) if precipitation >= precipitation_threshold]
+
+# Create scatter plot trace
+trace = go.Scatter(
+    x=altitude_msl,
+    y=precipitation_mm_hr,
+    mode='markers',
+    marker=dict(
+        color=['red' if p == 31 else 'skyblue' for p in precipitation_mm_hr],  # Highlight highly localized rain
+        size=[12 if p == 31 else 8 for p in precipitation_mm_hr],  # Increase size for highly localized rain
+        line=dict(color='white', width=0.5)  # Add white border to markers
+    ),
+    text=[f'Precipitation: {p} mm/hr<br>Altitude: {a} m' for p, a in zip(precipitation_mm_hr, altitude_msl)],
+    hoverinfo='text'
+)
+
+# Create layout
+layout = go.Layout(
+    title='Altitude above MSL vs Precipitation',
+    xaxis=dict(title='Altitude above MSL (m)', gridcolor='lightgray', zeroline=False),
+    yaxis=dict(title='Precipitation (mm/hr)', gridcolor='lightgray', zeroline=False),
+    hovermode='closest',
+    plot_bgcolor='rgba(240, 240, 240, 0.7)',
+    width=800,
+    height=600
+)
+
+# Create shaded region indicating the altitude range where precipitation is more occurring
+if altitude_high_precipitation:
+    max_precipitation_altitude = max(altitude_high_precipitation)
+    min_precipitation_altitude = min(altitude_high_precipitation)
+    layout.shapes = [dict(
+        type='rect',
+        xref='x',
+        yref='paper',
+        x0=min_precipitation_altitude,
+        y0=0,
+        x1=max_precipitation_altitude,
+        y1=1,
+        fillcolor='rgba(255,0,0,0.3)',
+        line=dict(color='rgba(255,0,0,0.3)'),
+        layer='below',
+        opacity=0.3
+    )]
+
+    # Add legend for the shaded region
+    layout.legend = dict(
+        orientation='h',
+        x=0.5,
+        y=1.05,
+        bgcolor='rgba(255, 255, 255, 0.5)',
+        bordercolor='rgba(255, 255, 255, 0.5)',
+        borderwidth=2,
+        traceorder='normal',
+        tracegroupgap=10
+    )
+
+    legend_text = f'Altitude Range with Precipitation ≥ {precipitation_threshold} mm/hr'
+    layout.annotations = [dict(
+        x=(max_precipitation_altitude + min_precipitation_altitude) / 2,
+        y=1.1,
+        text=legend_text,
+        showarrow=False
+    )]
+
+# Create figure
+fig = go.Figure(data=[trace], layout=layout)
+
+# Save the plot as PNG
+plt.savefig('altitude_vs_ppt.png')
+
+# Show interactive scatter plot
+fig.show()
