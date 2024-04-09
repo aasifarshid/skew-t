@@ -1,0 +1,40 @@
+import plotly.graph_objects as go
+
+# Data
+precipitation = [98, 89, 108, 31, 86, 74, 76, 72, 90, 70,
+                 76, 76, 128, 100, 120, 90, 90, 76, 100,
+                 104, 84, 70, 80, 72, 70, 140, 76, 70, 80]
+
+cape = [1166, 1488.66, 1927.04, 2350, 527.28, 1478, 502, 397, 1299, 2720,
+        1780, 1787, 935, 1916, 1232, 1741, 2336, 2639, 751,
+        796, 1371, 1175, 1685, 1227, 1755, 1121, 160, 226, 1934]
+
+# Determine marker color based on precipitation
+marker_colors = ['red' if p > 70 else 'blue' for p in precipitation]
+
+# Create scatter plot
+fig = go.Figure(data=go.Scatter(x=cape, y=precipitation, mode='markers', 
+                                marker=dict(color=marker_colors, size=10, line=dict(color='black', width=1))))
+
+# Add legend manually
+fig.add_trace(go.Scatter(x=[None], y=[None], mode='markers', marker=dict(color='red', size=10), name='Precipitation > 70mm/hr'))
+fig.add_trace(go.Scatter(x=[None], y=[None], mode='markers', marker=dict(color='blue', size=10), name='Precipitation <= 70mm/hr'))
+
+# Update layout
+fig.update_layout(
+    title='Interactive Scatter Plot: CAPE vs Precipitation',
+    xaxis=dict(title='CAPE (joule/kg)', gridcolor='lightgray', zeroline=False),
+    yaxis=dict(title='Precipitation (mm/hr)', gridcolor='lightgray', zeroline=False),
+    plot_bgcolor='rgba(240, 240, 240, 0.7)',
+    width=800,
+    height=600,
+    legend=dict(x=1, y=1, bgcolor='rgba(255, 255, 255, 0.5)', bordercolor='rgba(0, 0, 0, 0.5)', borderwidth=1)
+)
+
+# Add hover text
+hover_text = [f'Precipitation: {p} mm/hr<br>CAPE: {c} joule/kg' for p, c in zip(precipitation, cape)]
+fig.update_traces(hoverinfo='text', text=hover_text)
+
+
+# Show the interactive plot
+fig.show()
